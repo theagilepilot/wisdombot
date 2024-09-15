@@ -1,6 +1,6 @@
 import app from './app.js';
 
-const PORT = parseInt(parseInt(process.env.PORT)) || 8080;
+const PORT = parseInt(parseInt(process.env.PORT)) || 3000;
 
 app.listen(PORT, () =>
   {
