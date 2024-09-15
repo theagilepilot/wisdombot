@@ -47,7 +47,9 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
           method: 'PATCH',
           headers: headers,
           body: {
-            content: `**Prompt** \n${message} \n\n**AI Response**\n${gptResponse}`
+            message: {
+              content: `**Prompt** \n${message} \n\n**AI Response**\n${gptResponse}`
+            }
           }
         });
         console.log(`Follow up response code ${followup.status}`);
@@ -60,8 +62,9 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
           method: 'PATCH',
           headers: headers,
           body: {
-            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            content: 'Failed to generate a response. Please try again later.'
+            message:{
+              content: 'Failed to generate a response. Please try again later.'
+            }
           }
         });
       }
