@@ -46,29 +46,23 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
         let followup = await fetch(`${constants.DISCORD_API}/interactions/${id}/${token}/callback`, {
           method: 'PATCH',
           headers: headers,
-          body: JSON.stringify({
-            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-              content: `**Prompt** \n${message} \n\n**AI Response**\n${gptResponse}`
-            }
-          })
-          
+          body: {
+            content: `**Prompt** \n${message} \n\n**AI Response**\n${gptResponse}`
+          }
         });
         console.log(`Follow up response code ${followup.status}`);
-        
+
       } catch (err) {
         console.error("Failed to send response: ", err);
 
         // Send a follow-up message indicating the error
-        await fetch(`${constants.DISCORD_API}/interactions/${id}/${token}/callback`, {
-          method: 'POST',
+        await fetch(`${constants.DISCORD_API}/webhooks/${process.env.APP_ID}/${token}/messages/@original`, {
+          method: 'PATCH',
           headers: headers,
-          body: JSON.stringify({
+          body: {
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-              content: 'Failed to generate a response. Please try again later.'
-            }
-          })
+            content: 'Failed to generate a response. Please try again later.'
+          }
         });
       }
     } else {
