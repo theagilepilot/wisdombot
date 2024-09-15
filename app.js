@@ -14,56 +14,68 @@ const app = express();
  * Parse request body and verifies incoming requests using discord-interactions package
  */
 app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async function (req, res) {
-  // Interaction type and data
-  const { type, data } = req.body;
+  const { type, data, id, token } = req.body;
 
-  /**
-   * Handle verification requests
-   */
   if (type === InteractionType.PING) {
     return res.send({ type: InteractionResponseType.PONG });
   }
 
-  // acknowledge request
-  res.send({ type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE });
-  
-  /**
-   * Handle slash command requests
-   * See https://discord.com/developers/docs/interactions/application-commands#slash-commands
-   */
   if (type === InteractionType.APPLICATION_COMMAND) {
-    const { name, options } = data;
+    // Immediate acknowledgment
+    res.send({ type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE });
 
+    const { name, options } = data;
     if (name === 'prompt') {
       const messageOption = options?.find(option => option.name === 'message');
-      const message = messageOption.value;
-      
+      const message = messageOption?.value || '';
+
       console.log(`Received message: ${message}`);
       console.log(`Generating GPT response...`);
-      
-      let gptResponse = await getGptResponse(message);
 
-      console.log(`Sending response back to user`);
+      try {
+        const gptResponse = await getGptResponse(message);
 
-      try{
-        return res.send({
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            content: `**Prompt** \n${message} \n\n**AI Response**\n${gptResponse}`
+        console.log(`Sending response back to user`);
+
+        // Send the follow-up response
+        await fetch(`https://discord.com/api/v10/interactions/${id}/${token}/callback`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bot ${process.env.BOT_TOKEN}`
           },
+          body: JSON.stringify({
+            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: {
+              content: `**Prompt** \n${message} \n\n**AI Response**\n${gptResponse}`
+            }
+          })
+        });
+      } catch (err) {
+        console.error("Failed to send response: ", err);
+
+        // Send a follow-up message indicating the error
+        await fetch(`https://discord.com/api/v10/interactions/${id}/${token}/callback`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bot ${process.env.BOT_TOKEN}`
+          },
+          body: JSON.stringify({
+            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: {
+              content: 'Failed to generate a response. Please try again later.'
+            }
+          })
         });
       }
-      catch(err){
-        console.error("Failed to send response: ", err);
-        return res.status(500).json({ error: 'Failed to send response' });
-      } 
+    } else {
+      console.error(`Unknown command: ${name}`);
     }
-    console.error(`unknown command: ${name}`);
-    return res.status(400).json({ error: 'unknown command' });
+  } else {
+    console.error('Unknown interaction type', type);
+    res.status(400).json({ error: 'Unknown interaction type' });
   }
-
-  console.error('unknown interaction type', type);
-  return res.status(400).json({ error: 'unknown interaction type' });
 });
 
 export default app;
