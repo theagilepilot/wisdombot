@@ -43,7 +43,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
         console.log(`Sending response back to user`);
 
         // Send the follow-up response
-        await fetch(`${constants.DISCORD_API}/interactions/${id}/${token}/callback`, {
+        let followup = await fetch(`${constants.DISCORD_API}/interactions/${id}/${token}/callback`, {
           method: 'PATCH',
           headers: headers,
           body: JSON.stringify({
@@ -52,7 +52,10 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
               content: `**Prompt** \n${message} \n\n**AI Response**\n${gptResponse}`
             }
           })
+          
         });
+        console.log(`Follow up response code ${followup.status}`);
+        
       } catch (err) {
         console.error("Failed to send response: ", err);
 
