@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "Discord bot to integrate AI with the wisdom club",
   "main": "app.js",
+  "type":"module",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start":"node index.js"
   },
   "repository": {
     "type": "git",
