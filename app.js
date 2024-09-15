@@ -6,15 +6,11 @@ import {
   verifyKeyMiddleware,
 } from 'discord-interactions';
 import getGptResponse from './getGptResponse.js';
-import constants from './config/constants.js';
 import { DiscordRequest } from './utils.js';
+
 // Create an express app
 const app = express();
 
-const headers = {
-  'Content-Type': 'application/json',
-  'Authorization': `Bot ${process.env.BOT_TOKEN}`
-}
 /**
  * Interactions endpoint URL where Discord will send HTTP requests
  * Parse request body and verifies incoming requests using discord-interactions package
@@ -31,6 +27,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
     res.send({ type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE });
 
     const { name, options } = data;
+
     if (name === 'prompt') {
       const messageOption = options?.find(option => option.name === 'message');
       const message = messageOption?.value || '';
@@ -44,14 +41,15 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
         console.log(`Sending response back to user`);
 
         const followUpEndpoint = `webhooks/${process.env.APP_ID}/${token}/messages/@original`
+
         await DiscordRequest(followUpEndpoint, {
            method: 'PATCH', 
            body: { 
             content: `**Prompt** \n${message} \n\n**AI Response**\n${gptResponse}` 
           } 
         });
-        console.log(`Follow up response code ${followup.status}`);
 
+        console.log(`Follow up response code ${followup.status}`);
       } catch (err) {
         console.error("Failed to send response: ", err);
       }
