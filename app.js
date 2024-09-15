@@ -37,17 +37,24 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
       
       console.log(`Received message: ${message}`);
       console.log(`Generating GPT response...`);
-      let gptResponse = await getGptResponse(message);
       
-      // Send a message into the channel where command was triggered from
-      return res.send({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          content: `**Prompt** \n${message} \n\n**AI Response**\n${gptResponse}`
-        },
-      });
-    }
+      let gptResponse = await getGptResponse(message);
 
+      console.log(`Sending response back to user`);
+
+      try{
+        return res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            content: `**Prompt** \n${message} \n\n**AI Response**\n${gptResponse}`
+          },
+        });
+      }
+      catch(err){
+        console.error("Failed to send response: ", err);
+        return res.status(500).json({ error: 'Failed to send response' });
+      } 
+    }
     console.error(`unknown command: ${name}`);
     return res.status(400).json({ error: 'unknown command' });
   }

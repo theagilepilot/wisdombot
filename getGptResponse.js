@@ -11,6 +11,7 @@ export default async (prompt) => {
       ],
       model: 'gpt-4o-mini'
     });
+    console.log(`Generation completed.`)
     return completion.choices[0].message.content;
   }
   catch(err){
