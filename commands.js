@@ -10,6 +10,14 @@ export default async () => {
     type: constants.commandTypes.CHAT_INPUT,
     integration_types: [0, 1],
     contexts: [0],
+    options: [
+      {
+        type: 3, // STRING type
+        name: "message",
+        description: "The message to send",
+        required: true
+      }
+    ]
   };
 
   const ALL_COMMANDS = [PROMPT_COMMAND];
