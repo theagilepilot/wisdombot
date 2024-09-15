@@ -7,7 +7,7 @@ export default async (prompt) => {
   try{
     const completion = await openai.chat.completions.create({
       messages: [
-        {"role": "system", "content": "You are a helpful assistant. Responses should not be longer than 1800 characters."
+        {"role": "system", "content": "You are a helpful assistant. Responses should not be longer than 1500 chars."
         },
         {"role": "user", "content": prompt}
       ],
