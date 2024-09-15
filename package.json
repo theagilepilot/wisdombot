@@ -1,0 +1,28 @@
+{
+  "name": "wisdombot",
+  "version": "1.0.0",
+  "description": "Discord bot to integrate AI with the wisdom club",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theagilepilot/wisdombot.git"
+  },
+  "keywords": [
+    "discord",
+    "bot"
+  ],
+  "author": "Nick Amato",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/theagilepilot/wisdombot/issues"
+  },
+  "homepage": "https://github.com/theagilepilot/wisdombot#readme",
+  "dependencies": {
+    "discord-interactions": "^4.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0"
+  }
+}
