@@ -43,7 +43,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
 
         console.log(`Sending response back to user`);
 
-        const followUpEndpoint = `${process.env.APP_ID}/${token}/messages/@original`
+        const followUpEndpoint = `webhooks/${process.env.APP_ID}/${token}/messages/@original`
         await DiscordRequest(followUpEndpoint, {
            method: 'PATCH', 
            body: { 
