@@ -38,7 +38,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
       try {
         const gptResponse = await getGptResponse(message);
         // trim gpt response to 2000 characters
-        const trimmedResponse = gptResponse.substring(0, 1995);
+        const trimmedResponse = gptResponse.substring(0, 1900);
         console.log(`Sending response back to user`);
 
         const followUpEndpoint = `webhooks/${process.env.APP_ID}/${token}/messages/@original`
