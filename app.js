@@ -7,6 +7,7 @@ import {
 } from 'discord-interactions';
 import getGptResponse from './getGptResponse.js';
 import constants from './config/constants.js';
+import { DiscordRequest } from './utils.js';
 // Create an express app
 const app = express();
 
@@ -42,29 +43,17 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
 
         console.log(`Sending response back to user`);
 
-        // Send the follow-up response
-        // `${constants.DISCORD_API}/interactions/${id}/${token}/callback`
-        // `${constants.DISCORD_API}/webhooks/${process.env.APP_ID}/${token}/messages/@original`
-        let followup = await fetch(`${constants.DISCORD_API}/webhooks/${process.env.APP_ID}/${token}/messages/@original`, {
-          method: 'PATCH',
-          headers: headers,
-          body: {
-            content: `**Prompt** \n${message} \n\n**AI Response**\n${gptResponse}`
-          }
+        const followUpEndpoint = `${process.env.APP_ID}/${token}/messages/@original`
+        await DiscordRequest(followUpEndpoint, {
+           method: 'PATCH', 
+           body: { 
+            content: `**Prompt** \n${message} \n\n**AI Response**\n${gptResponse}` 
+          } 
         });
         console.log(`Follow up response code ${followup.status}`);
 
       } catch (err) {
         console.error("Failed to send response: ", err);
-
-        // Send a follow-up message indicating the error
-        await fetch(`${constants.DISCORD_API}/webhooks/${process.env.APP_ID}/${token}/messages/@original`, {
-          method: 'PATCH',
-          headers: headers,
-          body: {
-            content: 'Failed to generate a response. Please try again later.'
-          }
-        });
       }
     } else {
       console.error(`Unknown command: ${name}`);
