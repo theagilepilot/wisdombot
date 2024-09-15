@@ -6,9 +6,14 @@ import {
   verifyKeyMiddleware,
 } from 'discord-interactions';
 import getGptResponse from './getGptResponse.js';
+import constants from './config/constants.js';
 // Create an express app
 const app = express();
 
+const headers = {
+  'Content-Type': 'application/json',
+  'Authorization': `Bot ${process.env.BOT_TOKEN}`
+}
 /**
  * Interactions endpoint URL where Discord will send HTTP requests
  * Parse request body and verifies incoming requests using discord-interactions package
@@ -38,12 +43,9 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
         console.log(`Sending response back to user`);
 
         // Send the follow-up response
-        await fetch(`https://discord.com/api/v10/interactions/${id}/${token}/callback`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bot ${process.env.BOT_TOKEN}`
-          },
+        await fetch(`${constants.DISCORD_API}/interactions/${id}/${token}/callback`, {
+          method: 'PATCH',
+          headers: headers,
           body: JSON.stringify({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
@@ -55,12 +57,9 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
         console.error("Failed to send response: ", err);
 
         // Send a follow-up message indicating the error
-        await fetch(`https://discord.com/api/v10/interactions/${id}/${token}/callback`, {
+        await fetch(`${constants.DISCORD_API}/interactions/${id}/${token}/callback`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bot ${process.env.BOT_TOKEN}`
-          },
+          headers: headers,
           body: JSON.stringify({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
