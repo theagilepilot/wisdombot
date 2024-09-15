@@ -6,12 +6,9 @@ export default async (prompt) => {
   console.log(`Requesting GPT Completion for prompt: ${prompt}`);
   const completion = await openai.chat.completions.create({
       messages: [
-          {
-              role: 'user',
-              content: prompt
-          }
+        {"role": "user", "content": prompt}
       ],
-      model: 'gpt-4-turbo'
+      model: 'gpt-4o-mini'
   })
 
   return completion.choices[0].message.content;
