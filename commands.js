@@ -9,7 +9,7 @@ export default async () => {
     description: 'Prompt ChatGPT to generate text',
     type: constants.commandTypes.CHAT_INPUT,
     integration_types: [0, 1],
-    contexts: [0, 2],
+    contexts: [0],
   };
 
   const ALL_COMMANDS = [PROMPT_COMMAND];

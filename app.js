@@ -15,7 +15,7 @@ const app = express();
  */
 app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async function (req, res) {
   // Interaction type and data
-  const { type, data } = req.body;
+  const { type, data, message } = req.body;
 
   /**
    * Handle verification requests
@@ -37,7 +37,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
           // Fetches a random emoji to send from a helper function
-          content: `hello world`,
+          content: message,
         },
       });
     }
