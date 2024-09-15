@@ -15,7 +15,7 @@ const app = express();
  */
 app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async function (req, res) {
   // Interaction type and data
-  const { type, data, message } = req.body;
+  const { type, data } = req.body;
 
   /**
    * Handle verification requests
@@ -29,15 +29,17 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
    * See https://discord.com/developers/docs/interactions/application-commands#slash-commands
    */
   if (type === InteractionType.APPLICATION_COMMAND) {
-    const { name } = data;
+    const { name, options } = data;
 
     if (name === 'prompt') {
+      const messageOption = options?.find(option => option.name === 'message');
+      const message = messageOption ? messageOption.value : 'No prompt provided. Tell me something random.';
       // Send a message into the channel where command was triggered from
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
           // Fetches a random emoji to send from a helper function
-          content: message,
+          content: message
         },
       });
     }
