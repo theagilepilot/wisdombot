@@ -43,7 +43,9 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
         console.log(`Sending response back to user`);
 
         // Send the follow-up response
-        let followup = await fetch(`${constants.DISCORD_API}/interactions/${id}/${token}/callback`, {
+        // `${constants.DISCORD_API}/interactions/${id}/${token}/callback`
+        // `${constants.DISCORD_API}/webhooks/${process.env.APP_ID}/${token}/messages/@original`
+        let followup = await fetch(`${constants.DISCORD_API}/webhooks/${process.env.APP_ID}/${token}/messages/@original`, {
           method: 'PATCH',
           headers: headers,
           body: {
