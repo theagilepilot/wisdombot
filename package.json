@@ -2,11 +2,11 @@
   "name": "wisdombot",
   "version": "1.0.0",
   "description": "Discord bot to integrate AI with the wisdom club",
-  "main": "index.js",
+  "main": "app/index.js",
   "type": "module",
   "scripts": {
     "test": "test",
-    "start": "node index.js"
+    "start": "node app/index.js"
   },
   "repository": {
     "type": "git",
