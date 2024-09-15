@@ -1,12 +1,13 @@
 import 'dotenv/config';
 import { InstallGlobalCommands } from './utils.js';
+import constants from './config/constants.js';
 
 export default async () => {
   // Command containing options
   const PROMPT_COMMAND = {
     name: 'prompt',
     description: 'Prompt ChatGPT to generate text',
-    type: 1,
+    type: constants.commandTypes.CHAT_INPUT,
     integration_types: [0, 1],
     contexts: [0, 2],
   };
