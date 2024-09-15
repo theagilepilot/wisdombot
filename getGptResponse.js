@@ -9,7 +9,7 @@ export default async (prompt) => {
       messages: [
         {"role": "user", "content": prompt}
       ],
-      model: 'gpt-4o-mini'
+      model: 'gpt-4-turbo'
     });
     console.log(`Generation completed.`)
     return completion.choices[0].message.content;
