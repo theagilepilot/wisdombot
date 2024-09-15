@@ -34,6 +34,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
     if (name === 'prompt') {
       const messageOption = options?.find(option => option.name === 'message');
       const message = messageOption;
+      console.log(`Received message: ${message}`);
       // Send a message into the channel where command was triggered from
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
