@@ -39,10 +39,12 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
         const gptResponse = await getGptResponse(message);
 
         // Format message to fit 2000 character limit
-        const trimmedResponse = gptResponse.substring(0, 1900);
-        const trimmedMessage = message.substring(0,100);
+        const trimmedResponse = gptResponse.substring(0, 1800);
         const isResponseTrimmed = gptResponse.length > 1800;
-        const isMessageTrimmed = message.length > 50;
+
+        const trimmedMessage = message.substring(0,100);
+        const isMessageTrimmed = message.length > 100;
+      
         const formattedMessage = isMessageTrimmed ? trimmedMessage + '...' : message
         const formattedResponse = isResponseTrimmed ? trimmedResponse + '...' : gptResponse
 
