@@ -4,7 +4,7 @@ import setupCommands from './commands.js';
 
 const PORT = parseInt(parseInt(process.env.PORT)) || 3000;
 
-setupCommands();
+await setupCommands();
 
 app.listen(PORT, () =>
   {
