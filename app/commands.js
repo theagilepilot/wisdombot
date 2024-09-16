@@ -6,7 +6,7 @@ export default async () => {
   // Command containing options
   const PROMPT_COMMAND = {
     name: 'prompt',
-    description: 'Prompt ChatGPT to generate text',
+    description: 'Prompt ChatGPT to generate text. Output is limited to 2000 characters.',
     type: constants.commandTypes.CHAT_INPUT,
     integration_types: [0, 1],
     contexts: [0],
