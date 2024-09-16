@@ -37,8 +37,15 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
 
       try {
         const gptResponse = await getGptResponse(message);
-        // trim gpt response to 2000 characters
+
+        // Format message to fit 2000 character limit
         const trimmedResponse = gptResponse.substring(0, 1900);
+        const trimmedMessage = message.substring(0,50);
+        const isResponseTrimmed = gptResponse.length > 1900;
+        const isMessageTrimmed = message.length > 50;
+        const formattedMessage = isMessageTrimmed ? trimmedMessage + '...' : message
+        const formattedResponse = isResponseTrimmed ? trimmedResponse + '...' : gptResponse
+
         console.log(`Sending response back to user`);
 
         const followUpEndpoint = `webhooks/${process.env.APP_ID}/${token}/messages/@original`
@@ -46,7 +53,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
         await DiscordRequest(followUpEndpoint, {
            method: 'PATCH', 
            body: { 
-            content: `**Prompt** \n${message.substring(0,50)} \n\n**AI Response**\n${trimmedResponse}` 
+            content: `**Prompt** \n${formattedMessage} \n\n**AI Response**\n${formattedResponse}` 
           } 
         });
 
