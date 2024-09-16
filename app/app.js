@@ -46,7 +46,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
         await DiscordRequest(followUpEndpoint, {
            method: 'PATCH', 
            body: { 
-            content: `**Prompt** \n${message} \n\n**AI Response**\n${trimmedResponse}` 
+            content: `**Prompt** \n${message.substring(0,80)} \n\n**AI Response**\n${trimmedResponse}` 
           } 
         });
 
